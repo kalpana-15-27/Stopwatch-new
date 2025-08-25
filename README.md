@@ -2,6 +2,10 @@
 
 This is a simple stopwatch web application built using HTML, CSS, and JavaScript. The application allows users to measure and record time intervals with features for starting, pausing, resetting, and tracking lap times.
 
+## Demo
+[Try here](http://127.0.0.1:5500/stopwatch-app/)
+
+
 ## Project Structure
 
 ```
