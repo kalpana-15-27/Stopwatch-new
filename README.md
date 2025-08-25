@@ -20,14 +20,7 @@ stopwatch-app
 - Track and display lap times
 - User-friendly interface
 
-## Usage
 
-1. Open `index.html` in a web browser.
-2. Use the buttons to control the stopwatch:
-   - **Start**: Begin timing.
-   - **Pause**: Temporarily stop the timer.
-   - **Reset**: Set the timer back to zero.
-   - **Lap**: Record the current time as a lap.
 
 ## Technologies Used
 
