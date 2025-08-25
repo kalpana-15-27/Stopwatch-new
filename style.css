@@ -33,3 +33,14 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: #6b7280; /* bg-gray-500 */
 }
+
+/* Modal fade-in/out */
+.modal-show {
+    opacity: 1;
+    display: flex;
+}
+
+.modal-hide {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}

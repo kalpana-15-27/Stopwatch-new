@@ -7,6 +7,9 @@ const lapBtn = document.getElementById('lapBtn');
 const lapsList = document.getElementById('laps');
 const sessionsList = document.getElementById('sessions');
 const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+const confirmationModal = document.getElementById('confirmationModal');
+const confirmClearBtn = document.getElementById('confirmClearBtn');
+const cancelClearBtn = document.getElementById('cancelClearBtn');
 
 // State Variables
 let timer = null;
@@ -35,23 +38,16 @@ function formatTime(time) {
 }
 
 /**
- * Updates the main time display.
+ * Updates the main time display every 10ms.
  */
-function updateDisplay() {
-    // Use requestAnimationFrame for smoother rendering
-    requestAnimationFrame(() => {
-        const currentTime = isRunning ? Date.now() : startTime + elapsedTime;
-        elapsedTime = currentTime - startTime;
-        display.textContent = formatTime(elapsedTime);
-    });
-}
-
 function runTimer() {
-    const currentTime = Date.now();
-    elapsedTime = currentTime - startTime;
+    elapsedTime = Date.now() - startTime;
     display.textContent = formatTime(elapsedTime);
 }
 
+/**
+ * Starts the stopwatch.
+ */
 function start() {
     if (!isRunning) {
         startTime = Date.now() - elapsedTime;
@@ -63,6 +59,9 @@ function start() {
     }
 }
 
+/**
+ * Pauses the stopwatch.
+ */
 function pause() {
     if (isRunning) {
         clearInterval(timer);
@@ -72,8 +71,11 @@ function pause() {
     }
 }
 
+/**
+ * Resets the stopwatch and saves the current session.
+ */
 function reset() {
-    // Save session before resetting if timer has run
+    // Save session before resetting if the timer has run
     if (elapsedTime > 0) {
         saveSession();
     }
@@ -91,6 +93,9 @@ function reset() {
     lapBtn.disabled = true;
 }
 
+/**
+ * Records a new lap time.
+ */
 function lap() {
     if (isRunning) {
         const lapTime = elapsedTime;
@@ -99,6 +104,9 @@ function lap() {
     }
 }
 
+/**
+ * Renders the list of laps to the UI.
+ */
 function renderLaps() {
     lapsList.innerHTML = '';
     if (laps.length === 0) {
@@ -119,6 +127,9 @@ function renderLaps() {
 
 // --- Session History Functions ---
 
+/**
+ * Saves the current stopwatch session to local storage.
+ */
 function saveSession() {
     const session = {
         totalTime: elapsedTime,
@@ -130,6 +141,9 @@ function saveSession() {
     renderSessions();
 }
 
+/**
+ * Loads saved sessions from local storage.
+ */
 function loadSessions() {
     const storedSessions = localStorage.getItem('stopwatchSessions');
     if (storedSessions) {
@@ -138,6 +152,9 @@ function loadSessions() {
     }
 }
 
+/**
+ * Renders the list of saved sessions to the UI.
+ */
 function renderSessions() {
     sessionsList.innerHTML = '';
     clearHistoryBtn.disabled = sessions.length === 0;
@@ -179,12 +196,34 @@ function renderSessions() {
     });
 }
 
+/**
+ * Displays a confirmation modal to clear history.
+ */
+function showModal() {
+    confirmationModal.classList.remove('hidden');
+    setTimeout(() => {
+        confirmationModal.classList.add('modal-show');
+    }, 10);
+}
+
+/**
+ * Hides the confirmation modal.
+ */
+function hideModal() {
+    confirmationModal.classList.remove('modal-show');
+    setTimeout(() => {
+        confirmationModal.classList.add('hidden');
+    }, 300);
+}
+
+/**
+ * Clears all history from local storage.
+ */
 function clearHistory() {
-    if (confirm('Are you sure you want to clear all session history? This cannot be undone.')) {
-        sessions = [];
-        localStorage.removeItem('stopwatchSessions');
-        renderSessions();
-    }
+    sessions = [];
+    localStorage.removeItem('stopwatchSessions');
+    renderSessions();
+    hideModal(); // Hide the modal after clearing
 }
 
 // Event Listeners
@@ -192,10 +231,14 @@ startBtn.addEventListener('click', start);
 pauseBtn.addEventListener('click', pause);
 resetBtn.addEventListener('click', reset);
 lapBtn.addEventListener('click', lap);
-clearHistoryBtn.addEventListener('click', clearHistory);
+clearHistoryBtn.addEventListener('click', showModal);
+
+// Modal Event Listeners
+confirmClearBtn.addEventListener('click', clearHistory);
+cancelClearBtn.addEventListener('click', hideModal);
 
 // Initial Load
 document.addEventListener('DOMContentLoaded', () => {
     loadSessions();
-    reset();
+    reset();
 });
